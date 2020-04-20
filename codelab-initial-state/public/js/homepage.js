@@ -27,6 +27,14 @@ export async function onDocumentReady(firebaseApp) {
   console.log("Firebase Config", JSON.stringify(firebaseApp.options));
 
   const db = firebaseApp.firestore();
+
+  if (window.location.hostname === "localhost") {
+    console.log("localhost detected!");
+    db.settings({
+      host: "localhost:8080",
+      ssl: false
+    });
+  }
   
   const auth = firebaseApp.auth();
   const homePage = new HomePage(db, auth);
@@ -175,6 +183,10 @@ class HomePage {
 
   addToCart(id, itemData) {
     console.log("addToCart", id, JSON.stringify(itemData));
+    if (this.auth.currentUser === null) {
+        this.showError('You must be signed in!')
+        return;
+      }
     return this.db
       .collection("carts")
       .doc(this.auth.currentUser.uid)
