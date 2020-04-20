@@ -17,7 +17,7 @@ const path = require("path");
 const TEST_FIREBASE_PROJECT_ID = "test-firestore-rules-project";
 
 // TODO: Change this to your real Firebase Project ID
-const REAL_FIREBASE_PROJECT_ID = "changeme";
+const REAL_FIREBASE_PROJECT_ID = "fir-codelab-emulator";
 
 const firebase = require("@firebase/testing");
 
@@ -137,7 +137,7 @@ describe("shopping cart items", async () => {
   });
 });
 
-describe.skip("adding an item to the cart recalculates the cart total. ", () => {
+describe("adding an item to the cart recalculates the cart total. ", () => {
   let unsubscribe;
 
   after(() => {
@@ -178,9 +178,9 @@ describe.skip("adding an item to the cart recalculates the cart total. ", () => 
 
       // When the `itemCount`and `totalPrice` match the expectations for the
       // two items added, the promise resolves, and the test passes.
-      if (snap.data().itemCount === expectedCount && snap.data().totalPrice == expectedTotal) {
+      if (snap.data().itemCount === expectedCount && snap.data().totalPrice === expectedTotal) {
         done();
-      };
+      }
     });
   });
 

@@ -21,16 +21,30 @@ const db = admin.initializeApp().firestore();
 exports.calculateCart = functions
     .firestore.document("carts/{cartId}/items/{itemId}")
     .onWrite(async (change, context) => {
-      let totalPrice = 125.98;
-      let itemCount = 8;
+      let totalPrice = 0;
+      let itemCount = 0;
       try {
 
         const cartRef = db.collection("carts").doc(context.params.cartId);
+        const itemsSnap = await cartRef.collection("items").get();
+
+        itemsSnap.docs.forEach(item => {
+            const itemData = item.data();
+            if (itemData.price) {
+                const quantity = (itemData.quantity) ? itemData.quantity : 1;
+                itemCount += quantity;
+                totalPrice += (itemData.price * quantity);
+            }
+        })
 
         return cartRef.update({
           totalPrice,
           itemCount
         });
       } catch(err) {
+          if (itemCount === 0) {
+              return;
+          }
+          console.log("Cart could not be recalculated. ", err)
       }
     });
